@@ -270,6 +270,7 @@ dialog {
   align-items: center;
   justify-content: space-between;
   height: 13rem;
+  width: 20rem;
   background-color: #508e9f;
   border-radius: 20px;
   color: #001a42;

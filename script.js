@@ -1,5 +1,5 @@
-const Player = (name, points = 0) => {
-  return { name, points };
+const Player = (name, points = 0, hasRolled = false) => {
+  return { name, points, hasRolled };
 };
 
 const Events = (() => {
@@ -18,8 +18,13 @@ const Events = (() => {
   };
 
   const startGameBtn = () => {
-    const startGameBtn = document.querySelector(".players__start");
-    startGameBtn.addEventListener("click", Game.initializeGame);
+    const startGameBtn = document.querySelector(".modal__button-start");
+    startGameBtn.addEventListener("click", Game.startGame);
+  };
+
+  const initializeGameBtn = () => {
+    const initializeGameBtn = document.querySelector(".players__start");
+    initializeGameBtn.addEventListener("click", Game.initializeGame);
   };
 
   const decideFirstPlayer = () => {
@@ -34,10 +39,11 @@ const Events = (() => {
 
   return {
     addPlayerBtn,
-    startGameBtn,
+    initializeGameBtn,
     decideFirstPlayer,
     rollDice,
     endTurn,
+    startGameBtn,
   };
 })();
 
@@ -47,12 +53,18 @@ const Game = (() => {
   let currentPlayerIndex = 0;
   let currentPoints;
   let currentTotal;
+  let gameStarted = false;
+  let winner = false;
 
   const getCurrentPoints = () => currentPoints;
   const getCurrentTotal = () => currentTotal;
   const getCurrentPlayerIndex = () => currentPlayerIndex;
 
   const rollDice = () => {
+    if (gameStarted === true) {
+      console.log("GAME STARTED: DIFFERENT RULES FOR DICE ROLLS");
+    }
+
     dice = [];
     for (let i = 0; i < 5; i++) {
       dice.push(Math.floor(Math.random() * 6) + 1);
@@ -71,7 +83,7 @@ const Game = (() => {
     DisplayController.removeIntro();
     DisplayController.displayAddPlayers();
     Events.addPlayerBtn();
-    Events.startGameBtn();
+    Events.initializeGameBtn();
   };
 
   const initializeGame = () => {
@@ -93,8 +105,12 @@ const Game = (() => {
 
   const endTurn = () => {
     addPointsToCurrentPlayer();
+    players[currentPlayerIndex].hasRolled = true;
     currentPoints = 0;
     nextPlayer();
+    if (players[currentPlayerIndex].hasRolled) {
+      DisplayController.displayGameStartedModal();
+    }
     DisplayController.updatePlayers();
     DisplayController.displayCurrentPlayerInfo();
   };
@@ -114,6 +130,15 @@ const Game = (() => {
     Events.rollDice();
   };
 
+  const startGame = () => {
+    DisplayController.closeModal();
+    players.forEach((player) => {
+      player.points = 0;
+    });
+    DisplayController.updatePlayers();
+    DisplayController.displayCurrentPlayerInfo();
+  };
+
   return {
     startPlayerAdding,
     addPlayer,
@@ -126,6 +151,7 @@ const Game = (() => {
     endTurn,
     getCurrentTotal,
     getCurrentPlayerIndex,
+    startGame,
   };
 })();
 
@@ -250,6 +276,22 @@ const DisplayController = (() => {
     console.log("MODAL DISPLAYED");
   };
 
+  const displayGameStartedModal = () => {
+    const modalContainer = document.querySelector("#modal");
+    modalContainer.innerHTML = `     
+    <div class="modal__info">
+    <h1 class="modal__heading">The game has started!</h1>
+    <h3 class="modal__text">
+      ${Game.players[Game.getCurrentPlayerIndex()].name} will start!
+    </h3>
+    <button class="modal__button-start">Start the game</button>
+  </div>
+    `;
+
+    displayModal();
+    Events.startGameBtn();
+  };
+
   const closeModal = () => {
     const modalContainer = document.querySelector("#modal");
     modalContainer.close();
@@ -278,6 +320,7 @@ const DisplayController = (() => {
     displayRoll,
     displayCurrentPlayerInfo,
     updatePlayers,
+    displayGameStartedModal,
   };
 })();
 
