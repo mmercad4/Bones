@@ -43,6 +43,59 @@ body {
   margin-top: 10%;
 }
 
+.introduction__instruction {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 10%;
+  color: white;
+  margin-right: 3%;
+  margin-left: 3%;
+  font-size: 20px;
+}
+
+.introduction__instruction span,
+.introduction__instruction3 {
+  margin-right: 5px;
+}
+
+.introduction__instruction3 {
+  display: flex;
+  gap: 2px;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  margin-top: 3%;
+  font-weight: 300;
+}
+
+.introduction__instruction3 span {
+  color: orange;
+}
+
+.introduction__start {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  font-size: 2rem;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-weight: bolder;
+  background: #ffb76b;
+  background: linear-gradient(
+    to bottom,
+    #ffb76b 0%,
+    #ffa73d 30%,
+    #ff7c00 60%,
+    #ff7f04 100%
+  );
+  border-radius: 10px;
+
+  color: #001a42;
+}
+
 .game {
   display: grid;
   grid-template-columns: 6fr 1fr;
