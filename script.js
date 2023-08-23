@@ -3,6 +3,11 @@ const Player = (name, points = 0) => {
 };
 
 const Events = (() => {
+  const endTurn = () => {
+    const endTurnBtn = document.querySelector(".game__endTurn");
+    endTurnBtn.addEventListener("click", Game.endTurn);
+  };
+
   const addPlayerBtn = () => {
     const addPlayerBtn = document.querySelector(".addPlayers__Btn");
     const addPlayersValue = document.querySelector("#addPlayers__form");
@@ -22,17 +27,44 @@ const Events = (() => {
     modalBtn.addEventListener("click", Game.decideFirstPlayer);
   };
 
+  const rollDice = () => {
+    const rollDiceBtn = document.querySelector(".game__roll");
+    rollDiceBtn.addEventListener("click", Game.rollDice);
+  };
+
   return {
     addPlayerBtn,
     startGameBtn,
     decideFirstPlayer,
+    rollDice,
+    endTurn,
   };
 })();
 
 const Game = (() => {
   let players = [];
+  let dice = [];
   let currentPlayerIndex = 0;
-  let currentPoints = 0;
+  let currentPoints;
+  let currentTotal;
+
+  const getCurrentPoints = () => currentPoints;
+  const getCurrentTotal = () => currentTotal;
+  const getCurrentPlayerIndex = () => currentPlayerIndex;
+
+  const rollDice = () => {
+    dice = [];
+    for (let i = 0; i < 5; i++) {
+      dice.push(Math.floor(Math.random() * 6) + 1);
+    }
+    DisplayController.displayRoll(dice);
+
+    const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
+    currentPoints = sum;
+    currentTotal = players[currentPlayerIndex].points + sum;
+
+    DisplayController.displayCurrentPlayerInfo();
+  };
 
   const startPlayerAdding = () => {
     console.log("PLAYER ADDING STARTED");
@@ -48,6 +80,23 @@ const Game = (() => {
     DisplayController.displayGame();
     DisplayController.displayModal();
     Events.decideFirstPlayer();
+    Events.endTurn();
+  };
+
+  const nextPlayer = () => {
+    currentPlayerIndex++;
+
+    if (currentPlayerIndex === players.length) {
+      currentPlayerIndex = 0;
+    }
+  };
+
+  const endTurn = () => {
+    addPointsToCurrentPlayer();
+    currentPoints = 0;
+    nextPlayer();
+    DisplayController.updatePlayers();
+    DisplayController.displayCurrentPlayerInfo();
   };
 
   const addPlayer = (name) => {
@@ -56,9 +105,13 @@ const Game = (() => {
     DisplayController.displayNewPlayer();
   };
 
+  const addPointsToCurrentPlayer = () => {
+    players[currentPlayerIndex].points += currentPoints;
+  };
+
   const decideFirstPlayer = () => {
     DisplayController.closeModal();
-    //
+    Events.rollDice();
   };
 
   return {
@@ -68,6 +121,11 @@ const Game = (() => {
     initializeGame,
     currentPlayerIndex,
     decideFirstPlayer,
+    rollDice,
+    getCurrentPoints,
+    endTurn,
+    getCurrentTotal,
+    getCurrentPlayerIndex,
   };
 })();
 
@@ -80,6 +138,44 @@ const DisplayController = (() => {
 
   const removeAddPlayers = () => {
     mainContainer.innerHTML = "";
+  };
+
+  const displayCurrentPlayerInfo = () => {
+    const currentPlayerContainer = document.querySelector(
+      ".game__currentPlayerInfo"
+    );
+
+    currentPlayerContainer.innerHTML = "";
+
+    currentPlayerContainer.innerHTML = `
+    <div class="game__currentPlayerName">${
+      Game.players[Game.getCurrentPlayerIndex()].name
+    }</div>
+    <div class="game__curentPlayerPoints">${Game.getCurrentPoints()}</div>
+    <div class="game__currentPlayerTotal">${
+      Game.players[Game.getCurrentPlayerIndex()].points +
+      Game.getCurrentPoints()
+    }</div>`;
+  };
+
+  const displayRoll = (dice) => {
+    console.log(dice);
+    const diceContainer = document.querySelector(".dice");
+    diceContainer.innerHTML = "";
+    dice.forEach((roll) => {
+      diceContainer.innerHTML += `
+        <li><img src="assets/dice-six-faces-${roll}.svg" alt="" /></li>`;
+    });
+  };
+
+  const updatePlayers = () => {
+    const playersContainer = document.querySelector(".game__players");
+    playersContainer.innerHTML = "";
+    Game.players.forEach((player) => {
+      playersContainer.innerHTML += `
+      <div class="player">${player.name} <span class="points">${player.points}</span></div>
+        `;
+    });
   };
 
   const displayAddPlayers = () => {
@@ -101,12 +197,12 @@ const DisplayController = (() => {
   const displayGame = () => {
     mainContainer.innerHTML = `    <div class="game">
       <div class="game__board">
-        <ul>
-          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
-          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
-          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
-          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
-          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
+        <ul class="dice">
+          <li><img src="assets/dice-six-faces-5.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-5.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-5.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-5.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-5.svg" alt="" /></li>
         </ul>
       </div>
 
@@ -179,6 +275,9 @@ const DisplayController = (() => {
     displayNewPlayer,
     displayModal,
     closeModal,
+    displayRoll,
+    displayCurrentPlayerInfo,
+    updatePlayers,
   };
 })();
 
