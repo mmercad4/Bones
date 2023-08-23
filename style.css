@@ -265,14 +265,58 @@ body {
 }
 
 dialog {
+  background-color: rgba(255, 0, 0, 0);
+}
+
+.modal__info {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
-  height: 30%;
-  width: 90%;
-  background-color: var(--background-color);
-  border: none;
+  justify-content: space-between;
+  height: 13rem;
+  background-color: #508e9f;
+  border-radius: 20px;
+  color: #001a42;
+}
+
+.modal__heading {
+  margin-top: 5%;
+  font-weight: bold;
+}
+
+.modal__text {
+  text-align: center;
+}
+
+dialog button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  background: #ffb76b;
+  background: linear-gradient(
+    to bottom,
+    #ffb76b 0%,
+    #ffa73d 30%,
+    #ff7c00 60%,
+    #ff7f04 100%
+  );
+  border-radius: 10px;
+  color: #001a42;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5%;
+}
+
+/* dialog {
+  background-color: #001a42;
+}
+
+.modal__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   color: #001a42;
   background-color: #508e9f;
   border-radius: 20px;
@@ -295,8 +339,4 @@ dialog button {
   border: none;
   color: #001a42;
 }
-
-dialog button:active {
-  background: #ffd79d;
-
-}
+ */
