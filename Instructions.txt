@@ -1,0 +1,24 @@
+Sure, here is a summary of the Bones dice game rules:
+
+The goal of the game is to be the first player to reach 10,000 points.
+To start, each player rolls one die. The player with the highest roll goes first.
+On your turn, you roll all five dice. You can keep rolling as long as you roll at least one 1, 5, or three-of-a-kind.
+If you roll a zero on your first roll, your turn is over and you lose all points from your previous roll.
+You can score points for:
+Ones: 100 points for each 1 rolled
+Fives: 50 points for each 5 rolled
+Three of a kind: 1000 points for three dice of the same number
+Four of a kind: 2000 points for four dice of the same number
+Yahtzee: 10,000 points for all five dice of the same number
+You can also score bonus points for:
+Full house: 200 points for three of one number and two of another number
+Small straight: 300 points for 1-2-3-4-5
+Large straight: 400 points for 2-3-4-5-6
+If you end your turn without scoring any points, you lose all points from your previous roll.
+The first player to reach 10,000 points wins.
+Here are some additional tips for playing Bones:
+
+Set a minimum score for yourself. This will help you avoid ending your turn with a low score.
+Be strategic about when to keep rolling. If you have a good chance of scoring points, keep rolling. But if you're not sure, it's often better to end your turn and save your points.
+Pay attention to the scoring guide. This will help you maximize your points.
+Have fun! Bones is a fun and challenging game that can be enjoyed by people of all ages.
