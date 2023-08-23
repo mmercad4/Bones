@@ -105,5 +105,6 @@ const DisplayController = (() => {
   };
 })();
 
-const startBtn = document.querySelector(".introduction__start");
+/* const startBtn = document.querySelector(".introduction__start");
 startBtn.addEventListener("click", Game.startPlayerAdding);
+ */

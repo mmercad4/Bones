@@ -9,9 +9,45 @@
   </head>
   <body>
     <div class="game">
-      <div class="game__controls">Start Restart Roll End turn</div>
-      <div class="game__board">Dice</div>
-      <div class="game__players">Marco, Erin</div>
+      <div class="game__board">
+        <ul>
+          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
+          <li><img src="assets/dice-six-faces-five.svg" alt="" /></li>
+        </ul>
+      </div>
+
+      <div class="game__currentPlayer">
+        <div class="game__currentPlayerHeadings">
+          <div class="game__curentPlayerNameHeading">Player Turn:</div>
+          <div class="game__currentPlayerPointsHeading">Points this turn:</div>
+          <div class="game__currentPlayerTotal">Total Points:</div>
+        </div>
+        <div class="game__currentPlayerInfo">
+          <div class="game__currentPlayerName">Marco</div>
+          <div class="game__curentPlayerPoints">0</div>
+          <div class="game__currentPlayerTotal">100</div>
+        </div>
+      </div>
+      <div class="game__controls">
+        <button class="game__roll">Roll</button>
+        <button class="game__endTurn">End turn</button>
+        <button class="game__restart">Restart</button>
+      </div>
+      <div class="game__players">
+        <div class="player">Marco <span class="points">0</span></div>
+      </div>
     </div>
+
+    <dialog id="modal">
+      <h1 class="modal__heading">Welcome to the game!</h1>
+      <h3 class="modal__text">
+        You all will take turns rolling the dice. The person with the highest
+        roll will start the game!
+      </h3>
+      <button class="modal__button">Continue</button>
+    </dialog>
   </body>
 </html>
