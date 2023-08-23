@@ -73,7 +73,8 @@ body {
   color: orange;
 }
 
-.introduction__start {
+.introduction__start,
+.players__start {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -96,10 +97,75 @@ body {
   color: #001a42;
 }
 
+.addPlayers {
+  display: grid;
+  grid-template-rows: 5fr 1fr 10fr 5fr;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.addPlayers__form {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  grid-row: 2/3;
+}
+
+.addPlayers__players {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  color: white;
+  height: 100%;
+  grid-row: 3/4;
+  margin-top: 30%;
+  font-size: 2rem;
+}
+
+.addPlayers__players span {
+  color: orange;
+}
+
+.player {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.players__start {
+  grid-row: 4/5;
+}
+
+.addPlayers__Btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10%;
+  margin-bottom: 10%;
+  font-size: 1.3rem;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-weight: bolder;
+  background: #ffb76b;
+  background: linear-gradient(
+    to bottom,
+    #ffb76b 0%,
+    #ffa73d 30%,
+    #ff7c00 60%,
+    #ff7f04 100%
+  );
+  border-radius: 10px;
+
+  color: #001a42;
+}
+
 .game {
   display: grid;
   grid-template-columns: 6fr 1fr;
   grid-template-rows: 1fr 10fr;
+  height: 100vh;
 }
 
 .game__controls {
