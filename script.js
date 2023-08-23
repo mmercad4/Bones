@@ -61,19 +61,29 @@ const Game = (() => {
   const getCurrentPlayerIndex = () => currentPlayerIndex;
 
   const rollDice = () => {
-    if (gameStarted === true) {
-      console.log("GAME STARTED: DIFFERENT RULES FOR DICE ROLLS");
-    }
-
     dice = [];
     for (let i = 0; i < 5; i++) {
       dice.push(Math.floor(Math.random() * 6) + 1);
     }
+    console.log(dice);
     DisplayController.displayRoll(dice);
 
-    const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
-    currentPoints = sum;
-    currentTotal = players[currentPlayerIndex].points + sum;
+    if (gameStarted === true) {
+      dice.sort((a, b) => a - b);
+      if (
+        dice[0] === 2 &&
+        dice[1] === 3 &&
+        dice[2] === 4 &&
+        dice[3] === 5 &&
+        dice[4] === 6
+      ) {
+        console.log("LARGE STRAIGHT");
+      }
+    } else {
+      const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
+      currentPoints = sum;
+      currentTotal = players[currentPlayerIndex].points + sum;
+    }
 
     DisplayController.displayCurrentPlayerInfo();
   };
@@ -108,7 +118,7 @@ const Game = (() => {
     players[currentPlayerIndex].hasRolled = true;
     currentPoints = 0;
     nextPlayer();
-    if (players[currentPlayerIndex].hasRolled) {
+    if (players[currentPlayerIndex].hasRolled && !gameStarted) {
       DisplayController.displayGameStartedModal();
     }
     DisplayController.updatePlayers();
@@ -131,6 +141,7 @@ const Game = (() => {
   };
 
   const startGame = () => {
+    gameStarted = true;
     DisplayController.closeModal();
     players.forEach((player) => {
       player.points = 0;
@@ -185,7 +196,6 @@ const DisplayController = (() => {
   };
 
   const displayRoll = (dice) => {
-    console.log(dice);
     const diceContainer = document.querySelector(".dice");
     diceContainer.innerHTML = "";
     dice.forEach((roll) => {
