@@ -67,11 +67,14 @@ const Game = (() => {
   let fives = 0;
   let dieToRoll = 5;
   let previousPlayer;
+  let highestScoringPlayer;
 
   const getCurrentPoints = () => currentPoints;
   const getCurrentTotal = () => currentTotal;
   const getCurrentPlayerIndex = () => currentPlayerIndex;
   const getPreviousPlayer = () => previousPlayer;
+  const getHighestScoringPlayer = () => highestScoringPlayer;
+  let highestScoringPlayerIndex = 0;
 
   const rollDice = () => {
     if (dieToRoll < 1) {
@@ -132,10 +135,19 @@ const Game = (() => {
     if (players[getCurrentPlayerIndex()].hasRolled && !gameStarted) {
       console.log("rolled !started");
       players[getCurrentPlayerIndex()].hasRolled = true;
-      addPointsToCurrentPlayer();
-      nextPlayer();
+      highestScoringPlayer = players.reduce((prev, curr, index) => {
+        if (curr.points > prev.points) {
+          {
+            highestScoringPlayerIndex = index;
+            return curr;
+          }
+        } else {
+          return prev;
+        }
+      });
       currentPoints = 0;
       currentTotal = 0;
+      currentPlayerIndex = highestScoringPlayerIndex;
       DisplayController.displayGameStartedModal();
       return;
     } else if (gameStarted) {
@@ -328,6 +340,7 @@ const Game = (() => {
     startGame,
     checkDice,
     getPreviousPlayer,
+    getHighestScoringPlayer,
   };
 })();
 
