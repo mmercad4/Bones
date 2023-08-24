@@ -117,51 +117,51 @@ const Game = (() => {
   };
 
   const endTurn = () => {
-    if (players[getCurrentPlayerIndex()].hasRolled) {
-      DisplayController.displayGameStartedModal();
-    } else if (!players[getCurrentPlayerIndex()].hasRolled) {
+    previousPlayer = players[getCurrentPlayerIndex()].name;
+    currentTotal = currentPoints;
+    currentPoints = 0;
+    DisplayController.displayCurrentPlayerInfo();
+
+    if (!players[getCurrentPlayerIndex()].hasRolled && !gameStarted) {
+      console.log("!rolled !started");
       addPointsToCurrentPlayer();
-      currentPoints = 0;
-      nextPlayer();
       DisplayController.updatePlayers();
-      DisplayController.displayCurrentPlayerInfo();
-      DisplayController.displayEmptyRoll();
+      players[getCurrentPlayerIndex()].hasRolled = true;
+      nextPlayer();
     }
-    players[getCurrentPlayerIndex()].hasRolled = true;
-
-    console.table(players);
-
-    /*     if (!players[getCurrentPlayerIndex()].hasRolled) {
+    if (players[getCurrentPlayerIndex()].hasRolled && !gameStarted) {
+      console.log("rolled !started");
       players[getCurrentPlayerIndex()].hasRolled = true;
       addPointsToCurrentPlayer();
-      currentPoints = 0;
       nextPlayer();
-      DisplayController.updatePlayers();
-      DisplayController.displayCurrentPlayerInfo();
-      DisplayController.displayEmptyRoll();
-    } else  */
-
-    /*     previousPlayer = players[currentPlayerIndex].name;
-    addPointsToCurrentPlayer();
-    players[currentPlayerIndex].hasRolled = true;
-    nextPlayer();
-    if (players[currentPlayerIndex].hasRolled && !gameStarted) {
+      currentPoints = 0;
+      currentTotal = 0;
       DisplayController.displayGameStartedModal();
-    }
+      return;
+    } else if (gameStarted) {
+      console.log("rolled started");
+      if (dieToRoll < 1) {
+        DisplayController.updatePlayers();
+        DisplayController.displayCurrentPlayerInfo();
+        nextPlayer();
+        currentTotal = 0;
+        DisplayController.displayNextPlayerModal();
+        DisplayController.displayCurrentPlayerInfo();
 
-    if (gameStarted) {
-      DisplayController.displayNextPlayerModal();
-      currentPoints = 0;
-      dieToRoll = 5;
-      DisplayController.updatePlayers();
-      DisplayController.displayCurrentPlayerInfo();
-      DisplayController.displayEmptyRoll();
-    } else {
-      currentPoints = 0;
-      DisplayController.updatePlayers();
-      DisplayController.displayCurrentPlayerInfo();
-      DisplayController.displayEmptyRoll();
-    } */
+        dieToRoll = 5;
+        return;
+      } else {
+        addPointsToCurrentPlayer();
+        DisplayController.updatePlayers();
+        DisplayController.displayCurrentPlayerInfo();
+        DisplayController.displayEmptyRoll();
+        nextPlayer();
+        DisplayController.displayNextPlayerModal();
+        DisplayController.displayCurrentPlayerInfo();
+
+        dieToRoll = 5;
+      }
+    }
   };
 
   const addPlayer = (name) => {
@@ -171,7 +171,7 @@ const Game = (() => {
   };
 
   const addPointsToCurrentPlayer = () => {
-    players[currentPlayerIndex].points += currentPoints;
+    players[currentPlayerIndex].points += currentTotal;
   };
 
   const decideFirstPlayer = () => {
@@ -301,6 +301,8 @@ const Game = (() => {
       } else if (pointConditions.isFivesAndOnes(dice)) {
         currentPoints += ones * 100;
         currentPoints += fives * 50;
+        fives = 0;
+        ones = 0;
       } else {
         endTurn();
       }
@@ -474,7 +476,7 @@ const DisplayController = (() => {
     const modalContainer = document.querySelector("#modal");
     modalContainer.innerHTML = `     
     <div class="modal__info">
-    <h1 class="modal__heading"> ${Game.getPreviousPlayer()} got ${Game.getCurrentPoints()} points!</h1>
+    <h1 class="modal__heading"> ${Game.getPreviousPlayer()} got ${Game.getCurrentTotal()} points!</h1>
     <h3 class="modal__text">
     It's ${Game.players[Game.getCurrentPlayerIndex()].name}'s turn!
     </h3>
