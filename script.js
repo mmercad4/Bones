@@ -68,22 +68,7 @@ const Game = (() => {
     console.log(dice);
     DisplayController.displayRoll(dice);
 
-    if (gameStarted === true) {
-      dice.sort((a, b) => a - b);
-      if (
-        dice[0] === 2 &&
-        dice[1] === 3 &&
-        dice[2] === 4 &&
-        dice[3] === 5 &&
-        dice[4] === 6
-      ) {
-        console.log("LARGE STRAIGHT");
-      }
-    } else {
-      const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
-      currentPoints = sum;
-      currentTotal = players[currentPlayerIndex].points + sum;
-    }
+    Game.checkDice();
 
     DisplayController.displayCurrentPlayerInfo();
   };
@@ -150,6 +135,39 @@ const Game = (() => {
     DisplayController.displayCurrentPlayerInfo();
   };
 
+  const checkDice = () => {
+    if (gameStarted === true) {
+      dice.sort((a, b) => a - b);
+
+      if (
+        dice[0] === 2 &&
+        dice[1] === 3 &&
+        dice[2] === 4 &&
+        dice[3] === 5 &&
+        dice[4] === 6
+      ) {
+        console.log("LARGE STRAIGHT");
+      } else if (
+        dice[0] === 1 &&
+        dice[1] === 2 &&
+        dice[2] === 3 &&
+        dice[3] === 4 &&
+        dice[4] === 5
+      ) {
+        console.log("SMALL STRAIGHT");
+      } else if (
+        (dice[0] === dice[1] && dice[2] === dice[3] && dice[2] === dice[4]) ||
+        (dice[0] === dice[1] && dice[0] === dice[2] && dice[3] === dice[4])
+      ) {
+        console.log("FULLHOUSE");
+      }
+    } else {
+      const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
+      currentPoints = sum;
+      currentTotal = players[currentPlayerIndex].points + sum;
+    }
+  };
+
   return {
     startPlayerAdding,
     addPlayer,
@@ -163,6 +181,7 @@ const Game = (() => {
     getCurrentTotal,
     getCurrentPlayerIndex,
     startGame,
+    checkDice,
   };
 })();
 
