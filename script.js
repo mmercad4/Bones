@@ -62,7 +62,7 @@ const Game = (() => {
   let currentPoints;
   let currentTotal;
   let gameStarted = false;
-  let winner = false;
+  let isGameWon = false;
   let ones = 0;
   let fives = 0;
   let dieToRoll = 5;
@@ -162,8 +162,9 @@ const Game = (() => {
 
         dieToRoll = 5;
         return;
-      } else {
+      } else if (!isGameWon) {
         addPointsToCurrentPlayer();
+        checkIfGameWon();
         DisplayController.updatePlayers();
         DisplayController.displayCurrentPlayerInfo();
         DisplayController.displayEmptyRoll();
@@ -173,7 +174,17 @@ const Game = (() => {
 
         dieToRoll = 5;
       }
+
+      if (isGameWon) {
+        DisplayController.updatePlayers();
+        DisplayController.displayCurrentPlayerInfo();
+        DisplayController.displayWinningModal();
+      }
     }
+  };
+
+  const checkIfGameWon = () => {
+    if (players[currentPlayerIndex].points >= 10000) return (isGameWon = true);
   };
 
   const addPlayer = (name) => {
@@ -288,7 +299,7 @@ const Game = (() => {
     currentPoints = 0;
     DisplayController.closeModal();
     players.forEach((player) => {
-      player.points = 0;
+      player.points = 9000;
     });
     DisplayController.updatePlayers();
     DisplayController.displayCurrentPlayerInfo();
@@ -507,6 +518,18 @@ const DisplayController = (() => {
     console.log("MODAL CLOSED");
   };
 
+  const displayWinningModal = () => {
+    const modalContainer = document.querySelector("#modal");
+    modalContainer.innerHTML = `     
+    <div class="modal__info">
+    <h1 class="modal__heading"> ${
+      Game.players[Game.getCurrentPlayerIndex()].name
+    } won with ${Game.players[Game.getCurrentPlayerIndex()].points}!</h1>
+    <button class="modal__button-nextPlayerBtn">End Game</button>
+  </div>
+    `;
+  };
+
   const displayNewPlayer = () => {
     const playersContainer = document.querySelector(".addPlayers__players");
     playersContainer.innerHTML = "";
@@ -532,6 +555,7 @@ const DisplayController = (() => {
     displayGameStartedModal,
     displayEmptyRoll,
     displayNextPlayerModal,
+    displayWinningModal,
   };
 })();
 
