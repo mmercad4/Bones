@@ -65,6 +65,7 @@ const Game = (() => {
     for (let i = 0; i < 5; i++) {
       dice.push(Math.floor(Math.random() * 6) + 1);
     }
+
     console.log(dice);
     DisplayController.displayRoll(dice);
 
@@ -155,6 +156,13 @@ const Game = (() => {
         dice[4] === 5
       ) {
         console.log("SMALL STRAIGHT");
+      } else if (
+        dice[0] === dice[1] &&
+        dice[0] === dice[2] &&
+        dice[0] === dice[3] &&
+        dice[0] === dice[4]
+      ) {
+        console.log("YAHTZEE");
       } else if (
         (dice[0] === dice[1] && dice[2] === dice[3] && dice[2] === dice[4]) ||
         (dice[0] === dice[1] && dice[0] === dice[2] && dice[3] === dice[4])
