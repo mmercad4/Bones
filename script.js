@@ -77,7 +77,7 @@ const Game = (() => {
   let highestScoringPlayerIndex = 0;
 
   const rollDice = () => {
-    if (dieToRoll < 1) {
+    if (dieToRoll < 0) {
       Game.endTurn();
     }
 
@@ -175,11 +175,11 @@ const Game = (() => {
         dieToRoll = 5;
       }
 
-      if (isGameWon) {
+      /*       if (isGameWon) {
         DisplayController.updatePlayers();
         DisplayController.displayCurrentPlayerInfo();
         DisplayController.displayWinningModal();
-      }
+      } */
     }
   };
 
@@ -244,7 +244,6 @@ const Game = (() => {
     },
 
     isFourOfAKind: function (dice) {
-      dieToRoll = dieToRoll - 1;
       const counter = {};
 
       for (const die of dice) {
@@ -262,8 +261,6 @@ const Game = (() => {
     },
 
     isThreeOfAKind: function (dice) {
-      dieToRoll = dieToRoll - 2;
-
       const counter = {};
 
       for (const die of dice) {
@@ -281,16 +278,17 @@ const Game = (() => {
     },
 
     isFivesAndOnes: function (dice) {
-      dieToRoll = dieToRoll - (fives + ones);
+      let returnBoolean = false;
       for (const die of dice) {
         if (die === 1) {
+          returnBoolean = true;
           ones++;
         } else if (die === 5) {
+          returnBoolean = true;
           fives++;
         }
       }
-
-      return true;
+      return returnBoolean;
     },
   };
 
@@ -310,23 +308,44 @@ const Game = (() => {
       dice.sort((a, b) => a - b);
 
       if (pointConditions.isLargeStraight(dice)) {
+        console.log("islargestart");
         currentPoints += 1000;
+        dieToRoll = 5;
       } else if (pointConditions.isSmallStraight(dice)) {
+        console.log("issmallstraight");
         currentPoints += 2000;
+        dieToRoll = 5;
       } else if (pointConditions.isYahtzee(dice)) {
+        console.log("isYahtzee");
         currentPoints += 10000;
+        dieToRoll = 5;
       } else if (pointConditions.isFullHouse(dice)) {
+        console.log("isFullHouse");
         currentPoints += 3000;
+        dieToRoll = 5;
       } else if (pointConditions.isFourOfAKind(dice)) {
+        console.log("isFourOfAKind");
         currentPoints += 5000;
+        dieToRoll = dieToRoll - 1;
       } else if (pointConditions.isThreeOfAKind(dice)) {
+        console.log("isThreeOfAKind");
         currentPoints += 500;
+        dieToRoll = 3;
       } else if (pointConditions.isFivesAndOnes(dice)) {
+        console.log("FivesAndOnes");
+        console.log(fives, ones);
+        dieToRoll = 0 + fives + ones;
+
+        if (dieToRoll === dice.length) {
+          dieToRoll = 5;
+        }
+
         currentPoints += ones * 100;
         currentPoints += fives * 50;
         fives = 0;
         ones = 0;
       } else {
+        console.log("0 points");
         endTurn();
       }
     } else {
