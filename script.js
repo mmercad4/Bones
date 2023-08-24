@@ -167,7 +167,6 @@ const Game = (() => {
         checkIfGameWon();
         DisplayController.updatePlayers();
         DisplayController.displayCurrentPlayerInfo();
-        DisplayController.displayEmptyRoll();
         nextPlayer();
         DisplayController.displayNextPlayerModal();
         DisplayController.displayCurrentPlayerInfo();
@@ -534,6 +533,8 @@ const DisplayController = (() => {
   const closeModal = () => {
     const modalContainer = document.querySelector("#modal");
     modalContainer.close();
+    displayEmptyRoll();
+
     console.log("MODAL CLOSED");
   };
 
