@@ -55,6 +55,8 @@ const Game = (() => {
   let currentTotal;
   let gameStarted = false;
   let winner = false;
+  let ones = 0;
+  let fives = 0;
 
   const getCurrentPoints = () => currentPoints;
   const getCurrentTotal = () => currentTotal;
@@ -126,6 +128,94 @@ const Game = (() => {
     Events.rollDice();
   };
 
+  const pointConditions = {
+    isLargeStraight: function (dice) {
+      if (
+        dice[0] === 2 &&
+        dice[1] === 3 &&
+        dice[2] === 4 &&
+        dice[3] === 5 &&
+        dice[4] === 6
+      )
+        return true;
+    },
+
+    isSmallStraight: function (dice) {
+      if (
+        dice[0] === 1 &&
+        dice[1] === 2 &&
+        dice[2] === 3 &&
+        dice[3] === 4 &&
+        dice[4] === 5
+      )
+        return true;
+    },
+
+    isYahtzee: function (dice) {
+      if (
+        dice[0] === dice[1] &&
+        dice[0] === dice[2] &&
+        dice[0] === dice[3] &&
+        dice[0] === dice[4]
+      )
+        return true;
+    },
+
+    isFullHouse: function (dice) {
+      if (
+        (dice[0] === dice[1] && dice[2] === dice[3] && dice[2] === dice[4]) ||
+        (dice[0] === dice[1] && dice[0] === dice[2] && dice[3] === dice[4])
+      )
+        return true;
+    },
+
+    isFourOfAKind: function (dice) {
+      const counter = {};
+
+      for (const die of dice) {
+        counter[die] = counter[die] || 0;
+        counter[die]++;
+      }
+
+      for (const key in counter) {
+        if (counter[key] === 4) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+
+    isThreeOfAKind: function (dice) {
+      const counter = {};
+
+      for (const die of dice) {
+        counter[die] = counter[die] || 0;
+        counter[die]++;
+      }
+
+      for (const key in counter) {
+        if (counter[key] === 3) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+
+    isFivesAndOnes: function (dice) {
+      for (const die of dice) {
+        if (die === 1) {
+          ones++;
+        } else if (die === 5) {
+          fives++;
+        }
+      }
+
+      return true;
+    },
+  };
+
   const startGame = () => {
     gameStarted = true;
     DisplayController.closeModal();
@@ -140,34 +230,21 @@ const Game = (() => {
     if (gameStarted === true) {
       dice.sort((a, b) => a - b);
 
-      if (
-        dice[0] === 2 &&
-        dice[1] === 3 &&
-        dice[2] === 4 &&
-        dice[3] === 5 &&
-        dice[4] === 6
-      ) {
-        console.log("LARGE STRAIGHT");
-      } else if (
-        dice[0] === 1 &&
-        dice[1] === 2 &&
-        dice[2] === 3 &&
-        dice[3] === 4 &&
-        dice[4] === 5
-      ) {
-        console.log("SMALL STRAIGHT");
-      } else if (
-        dice[0] === dice[1] &&
-        dice[0] === dice[2] &&
-        dice[0] === dice[3] &&
-        dice[0] === dice[4]
-      ) {
-        console.log("YAHTZEE");
-      } else if (
-        (dice[0] === dice[1] && dice[2] === dice[3] && dice[2] === dice[4]) ||
-        (dice[0] === dice[1] && dice[0] === dice[2] && dice[3] === dice[4])
-      ) {
-        console.log("FULLHOUSE");
+      if (pointConditions.isLargeStraight(dice)) {
+        currentPoints += 1000;
+      } else if (pointConditions.isSmallStraight(dice)) {
+        currentPoints += 2000;
+      } else if (pointConditions.isYahtzee(dice)) {
+        currentPoints += 10000;
+      } else if (pointConditions.isFullHouse(dice)) {
+        currentPoints += 3000;
+      } else if (pointConditions.isFourOfAKind(dice)) {
+        currentPoints += 5000;
+      } else if (pointConditions.isThreeOfAKind(dice)) {
+        currentPoints += 500;
+      } else if (pointConditions.isFivesAndOnes(dice)) {
+        currentPoints += ones * 100;
+        currentPoints += fives * 50;
       }
     } else {
       const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
