@@ -17,6 +17,13 @@ const Events = (() => {
     });
   };
 
+  const nextPlayerBtn = () => {
+    const nextPlayerBtn = document.querySelector(
+      ".modal__button-nextPlayerBtn"
+    );
+    nextPlayerBtn.addEventListener("click", DisplayController.closeModal);
+  };
+
   const startGameBtn = () => {
     const startGameBtn = document.querySelector(".modal__button-start");
     startGameBtn.addEventListener("click", Game.startGame);
@@ -44,6 +51,7 @@ const Events = (() => {
     rollDice,
     endTurn,
     startGameBtn,
+    nextPlayerBtn,
   };
 })();
 
@@ -57,14 +65,21 @@ const Game = (() => {
   let winner = false;
   let ones = 0;
   let fives = 0;
+  let dieToRoll = 5;
+  let previousPlayer;
 
   const getCurrentPoints = () => currentPoints;
   const getCurrentTotal = () => currentTotal;
   const getCurrentPlayerIndex = () => currentPlayerIndex;
+  const getPreviousPlayer = () => previousPlayer;
 
   const rollDice = () => {
+    if (dieToRoll < 1) {
+      Game.endTurn();
+    }
+
     dice = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < dieToRoll; i++) {
       dice.push(Math.floor(Math.random() * 6) + 1);
     }
 
@@ -102,15 +117,51 @@ const Game = (() => {
   };
 
   const endTurn = () => {
+    if (players[getCurrentPlayerIndex()].hasRolled) {
+      DisplayController.displayGameStartedModal();
+    } else if (!players[getCurrentPlayerIndex()].hasRolled) {
+      addPointsToCurrentPlayer();
+      currentPoints = 0;
+      nextPlayer();
+      DisplayController.updatePlayers();
+      DisplayController.displayCurrentPlayerInfo();
+      DisplayController.displayEmptyRoll();
+    }
+    players[getCurrentPlayerIndex()].hasRolled = true;
+
+    console.table(players);
+
+    /*     if (!players[getCurrentPlayerIndex()].hasRolled) {
+      players[getCurrentPlayerIndex()].hasRolled = true;
+      addPointsToCurrentPlayer();
+      currentPoints = 0;
+      nextPlayer();
+      DisplayController.updatePlayers();
+      DisplayController.displayCurrentPlayerInfo();
+      DisplayController.displayEmptyRoll();
+    } else  */
+
+    /*     previousPlayer = players[currentPlayerIndex].name;
     addPointsToCurrentPlayer();
     players[currentPlayerIndex].hasRolled = true;
-    currentPoints = 0;
     nextPlayer();
     if (players[currentPlayerIndex].hasRolled && !gameStarted) {
       DisplayController.displayGameStartedModal();
     }
-    DisplayController.updatePlayers();
-    DisplayController.displayCurrentPlayerInfo();
+
+    if (gameStarted) {
+      DisplayController.displayNextPlayerModal();
+      currentPoints = 0;
+      dieToRoll = 5;
+      DisplayController.updatePlayers();
+      DisplayController.displayCurrentPlayerInfo();
+      DisplayController.displayEmptyRoll();
+    } else {
+      currentPoints = 0;
+      DisplayController.updatePlayers();
+      DisplayController.displayCurrentPlayerInfo();
+      DisplayController.displayEmptyRoll();
+    } */
   };
 
   const addPlayer = (name) => {
@@ -170,6 +221,7 @@ const Game = (() => {
     },
 
     isFourOfAKind: function (dice) {
+      dieToRoll = dieToRoll - 1;
       const counter = {};
 
       for (const die of dice) {
@@ -187,6 +239,8 @@ const Game = (() => {
     },
 
     isThreeOfAKind: function (dice) {
+      dieToRoll = dieToRoll - 2;
+
       const counter = {};
 
       for (const die of dice) {
@@ -204,6 +258,7 @@ const Game = (() => {
     },
 
     isFivesAndOnes: function (dice) {
+      dieToRoll = dieToRoll - (fives + ones);
       for (const die of dice) {
         if (die === 1) {
           ones++;
@@ -218,6 +273,7 @@ const Game = (() => {
 
   const startGame = () => {
     gameStarted = true;
+    currentPoints = 0;
     DisplayController.closeModal();
     players.forEach((player) => {
       player.points = 0;
@@ -245,6 +301,8 @@ const Game = (() => {
       } else if (pointConditions.isFivesAndOnes(dice)) {
         currentPoints += ones * 100;
         currentPoints += fives * 50;
+      } else {
+        endTurn();
       }
     } else {
       const sum = dice.reduce((partialSum, a) => partialSum + a, 0);
@@ -267,6 +325,7 @@ const Game = (() => {
     getCurrentPlayerIndex,
     startGame,
     checkDice,
+    getPreviousPlayer,
   };
 })();
 
@@ -316,6 +375,11 @@ const DisplayController = (() => {
       <div class="player">${player.name} <span class="points">${player.points}</span></div>
         `;
     });
+  };
+
+  const displayEmptyRoll = () => {
+    const diceContainer = document.querySelector(".dice");
+    diceContainer.innerHTML = "";
   };
 
   const displayAddPlayers = () => {
@@ -406,6 +470,22 @@ const DisplayController = (() => {
     Events.startGameBtn();
   };
 
+  const displayNextPlayerModal = () => {
+    const modalContainer = document.querySelector("#modal");
+    modalContainer.innerHTML = `     
+    <div class="modal__info">
+    <h1 class="modal__heading"> ${Game.getPreviousPlayer()} got ${Game.getCurrentPoints()} points!</h1>
+    <h3 class="modal__text">
+    It's ${Game.players[Game.getCurrentPlayerIndex()].name}'s turn!
+    </h3>
+    <button class="modal__button-nextPlayerBtn">Continue</button>
+  </div>
+    `;
+
+    displayModal();
+    Events.nextPlayerBtn();
+  };
+
   const closeModal = () => {
     const modalContainer = document.querySelector("#modal");
     modalContainer.close();
@@ -435,6 +515,8 @@ const DisplayController = (() => {
     displayCurrentPlayerInfo,
     updatePlayers,
     displayGameStartedModal,
+    displayEmptyRoll,
+    displayNextPlayerModal,
   };
 })();
 
