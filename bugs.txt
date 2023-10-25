@@ -1,0 +1,5 @@
+1 {
+    1. Rolled four of a kind
+    2. got a bad roll (no winning points)
+    3. got 5000 points when it should have been 0 points
+}

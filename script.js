@@ -86,7 +86,6 @@ const Game = (() => {
       dice.push(Math.floor(Math.random() * 6) + 1);
     }
 
-    console.log(dice);
     DisplayController.displayRoll(dice);
 
     Game.checkDice();
